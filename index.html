@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Docker Project</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: none;
+            margin-bottom: 15px;
+            width: 250px;
+        }
+
+        .btn {
+            margin-top: 10px;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            background: #00c6ff;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-right: 10px;
+        }
+
+        .btn:hover {
+            background: #0072ff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Node + MongoDB</h1>
+
+        <!-- Input for user -->
+        <input type="text" id="userInput" placeholder="Enter your note" />
+
+        <!-- Insert / Delete Buttons -->
+        <div>
+            <button class="btn" onclick="insertData()">Insert Data</button>
+            <button class="btn" onclick="deleteData()">Delete Data</button>
+        </div>
+    </div>
+
+    <script>
+        async function insertData() {
+            const value = document.getElementById('userInput').value.trim();
+            if (!value) return alert("Please enter some text!");
+
+            try {
+                const res = await fetch('/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: value })
+                });
+                const text = await res.text();
+                alert(text);
+                document.getElementById('userInput').value = ""; // clear input
+            } catch (err) {
+                alert("Error inserting data: " + err);
+            }
+        }
+
+        async function deleteData() {
+            try {
+                const res = await fetch('/delete', { method: 'DELETE' });
+                const text = await res.text();
+                alert(text);
+            } catch (err) {
+                alert("Error deleting data: " + err);
+            }
+        }
+    </script>
+</body>
+</html>
