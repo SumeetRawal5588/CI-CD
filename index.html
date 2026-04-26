@@ -3,77 +3,248 @@
 <head>
     <title>Docker Project</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #0a0a0a;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             color: white;
+            overflow: hidden;
+            position: relative;
         }
+
+        /* Background decorative elements */
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 204, 0, 0.1);
+            filter: blur(40px);
+        }
+
+        .bg-circle-1 {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            right: -150px;
+            background: rgba(255, 204, 0, 0.15);
+        }
+
+        .bg-circle-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            left: -100px;
+            background: rgba(255, 204, 0, 0.1);
+        }
+
+        .bg-star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ffcc00;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ffcc00;
+        }
+
+        .star-1 { top: 20%; left: 10%; }
+        .star-2 { top: 30%; right: 15%; }
+        .star-3 { bottom: 25%; left: 20%; }
+        .star-4 { bottom: 40%; right: 10%; }
+        .star-5 { top: 60%; left: 5%; }
 
         .container {
             text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 40px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            background: rgba(20, 20, 20, 0.9);
+            padding: 60px 50px;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 0 60px rgba(255, 204, 0, 0.3),
+                        0 20px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 204, 0, 0.2);
+            z-index: 10;
+            position: relative;
+            max-width: 400px;
         }
 
         h1 {
-            font-size: 40px;
-            margin-bottom: 20px;
+            font-size: 48px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ffcc00, #ff9500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            margin-bottom: 40px;
+            color: #999;
+            font-weight: 300;
+        }
+
+        .input-group {
+            margin-bottom: 35px;
         }
 
         input {
-            padding: 10px 15px;
-            border-radius: 10px;
-            border: none;
-            margin-bottom: 15px;
-            width: 250px;
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 204, 0, 0.3);
+            background: rgba(30, 30, 30, 0.8);
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input::placeholder {
+            color: #666;
+        }
+
+        input:focus {
+            border-color: rgba(255, 204, 0, 0.6);
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.2);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
         }
 
         .btn {
-            margin-top: 10px;
-            padding: 12px 25px;
+            padding: 15px 30px;
             border: none;
-            border-radius: 25px;
-            background: #00c6ff;
-            color: black;
+            border-radius: 12px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.3s;
-            margin-right: 10px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .btn:hover {
-            background: #0072ff;
-            color: white;
+        .btn-insert {
+            background: linear-gradient(135deg, #ffcc00, #ff9500);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+        }
+
+        .btn-insert:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 204, 0, 0.4);
+        }
+
+        .btn-delete {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffcc00;
+            border: 1px solid rgba(255, 204, 0, 0.3);
+        }
+
+        .btn-delete:hover {
+            background: rgba(255, 204, 0, 0.1);
+            border-color: rgba(255, 204, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Success message styles */
+        .success-message {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            color: #000;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .success-message.show {
+            transform: translateX(0);
+        }
+
+        .error-message {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #ff4444, #cc0000);
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(255, 68, 68, 0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .error-message.show {
+            transform: translateX(0);
         }
     </style>
 </head>
 <body>
+    <!-- Background decorative elements -->
+    <div class="bg-circle bg-circle-1"></div>
+    <div class="bg-circle bg-circle-2"></div>
+    <div class="bg-star star-1"></div>
+    <div class="bg-star star-2"></div>
+    <div class="bg-star star-3"></div>
+    <div class="bg-star star-4"></div>
+    <div class="bg-star star-5"></div>
+
     <div class="container">
         <h1>Node + MongoDB</h1>
+        <p class="subtitle">Manage your data with style</p>
 
-        <!-- Input for user -->
-        <input type="text" id="userInput" placeholder="Enter your note " />
+        <div class="input-group">
+            <input type="text" id="userInput" placeholder="Enter your note" />
+        </div>
 
-        <!-- Insert / Delete Buttons -->
-        <div>
-            <button class="btn" onclick="insertData()">Insert Data</button>
-            <button class="btn" onclick="deleteData()">Delete Data</button>
+        <div class="button-group">
+            <button class="btn btn-insert" onclick="insertData()">INSERT DATA</button>
+            <button class="btn btn-delete" onclick="deleteData()">DELETE DATA</button>
         </div>
     </div>
 
+    <!-- Message containers -->
+    <div id="successMessage" class="success-message"></div>
+    <div id="errorMessage" class="error-message"></div>
+
     <script>
+        function showMessage(message, type = 'success') {
+            const messageEl = type === 'success' ? 
+                document.getElementById('successMessage') : 
+                document.getElementById('errorMessage');
+            
+            messageEl.textContent = message;
+            messageEl.classList.add('show');
+            
+            setTimeout(() => {
+                messageEl.classList.remove('show');
+            }, 3000);
+        }
+
         async function insertData() {
             const value = document.getElementById('userInput').value.trim();
-            if (!value) return alert("Please enter some text!");
+            if (!value) {
+                showMessage("Please enter some text!", 'error');
+                return;
+            }
 
             try {
                 const res = await fetch('/add', {
@@ -82,10 +253,10 @@
                     body: JSON.stringify({ name: value })
                 });
                 const text = await res.text();
-                alert(text);
-                document.getElementById('userInput').value = ""; // clear input
+                showMessage("Data inserted successfully!", 'success');
+                document.getElementById('userInput').value = "";
             } catch (err) {
-                alert("Error inserting data: " + err);
+                showMessage("Error inserting data: " + err, 'error');
             }
         }
 
@@ -93,9 +264,9 @@
             try {
                 const res = await fetch('/delete', { method: 'DELETE' });
                 const text = await res.text();
-                alert(text);
+                showMessage("Data deleted successfully!", 'success');
             } catch (err) {
-                alert("Error deleting data: " + err);
+                showMessage("Error deleting data: " + err, 'error');
             }
         }
     </script>
